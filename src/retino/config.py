@@ -2,7 +2,10 @@ import os, torch
 from pathlib import Path
 from dataclasses import dataclass, field
 
-IN_COLAB = "google.colab" in str(get_ipython())
+try:
+    IN_COLAB = "google.colab" in str(get_ipython())  # type: ignore[name-defined]
+except NameError:
+    IN_COLAB = False
 
 
 @dataclass
