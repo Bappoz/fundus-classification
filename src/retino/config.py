@@ -22,9 +22,10 @@ class Config:
     meta_dir: Path = field(init=False)
     image_dir: Path = field(init=False)
 
-    # image
-    img_size: int = 224  # Padrao ImageNET
-    imagenet_mean: tuple = (0.485, 0.456, 0.406)
+    # image - Normalização e tamanho de entrada seguindo o padrão do ImageNET, visto que os modelos pré-treinados foram treinados com essas configurações.
+    # Numeros fixos - Não devem ser alterados 
+    img_size: int = 224  
+    imagenet_mean: tuple = (0.485, 0.456, 0.406) 
     imagenet_std: tuple = (0.229, 0.224, 0.225)
 
     # treino
