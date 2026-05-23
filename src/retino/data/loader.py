@@ -92,3 +92,18 @@ def image_quality(path: Path) -> dict:
         "Sharpeness": float(cv2.Laplacian(gray, cv2.CV_64F).var()),
         "brightness": float(gray.mean())  
     }
+
+
+def filter_quality(df: pd.DataFrame,
+                   min_quality: str = "Adequate") -> pd.DataFrame:
+    """Mantém só imagens com quality == Adequate no BRSET.
+    ODIR não tem quality — sempre mantém.
+    """
+    brset_ok = (df.source == "brset") & (df.quality == min_quality)
+    odir_ok  =  df.source == "odir"
+    filtered = df[brset_ok | odir_ok].reset_index(drop=True)
+
+    removed = len(df) - len(filtered)
+    print(f"  Removidas por qualidade: {removed} ({100*removed/len(df):.1f}%)")
+    print(f"  Restantes: {len(filtered)}")
+    return filtered
