@@ -35,8 +35,8 @@ class Config:
     backbone: str = "resnet50"
 
     def __post_init__(self):
-        self.meta_dir = self.data_root / "meta"
-        self.image_dir = self.data_root / "images"
+        self.meta_dir = self.data_root / "dataset"
+        self.image_dir = self.data_root / "dataset"
 
 
 cfg = Config()
