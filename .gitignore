@@ -5,9 +5,9 @@ build/
 dist/
 wheels/
 *.egg-info
-data/
 *.pth
 .ipynb_checkpoints/
+.pytest_cache/
 
 # Virtual environments
 .venv
