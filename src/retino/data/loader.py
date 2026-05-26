@@ -86,7 +86,7 @@ def image_quality(path: Path) -> dict:
     img = cv2.imread(str(path))
     if img is None:
         return {"valid": False, "sharpness": 0, "brightness": 0}
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return {
         "valid": True,
         "Sharpeness": float(cv2.Laplacian(gray, cv2.CV_64F).var()),
