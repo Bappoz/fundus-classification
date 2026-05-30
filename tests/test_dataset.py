@@ -3,10 +3,10 @@ import pandas as pd
 from pathlib import Path
 from retino.data.loader import build_labels, filter_quality, verify_files
 from retino.data.dataset import FundusDataset, get_transforms, make_sampler
-from retino.data.losses import FocalLoss
+from retino.losses import FocalLoss
 
 SAMPLE = Path("data/sample")
-META   = Path("data/meta")
+META = Path("data/meta")
 
 
 def get_sample_df():
@@ -18,8 +18,9 @@ def get_sample_df():
 def test_transforms_output_shape():
     """Imagem deve sair como tensor [3, 224, 224]."""
     import cv2, numpy as np
+
     img = np.zeros((512, 512, 3), dtype=np.uint8)
-    t   = get_transforms("train")
+    t = get_transforms("train")
     out = t(image=img)["image"]
     assert out.shape == (3, 224, 224), f"shape inesperado: {out.shape}"
 
@@ -38,15 +39,16 @@ def test_dataset_item():
 def test_focal_loss_shape():
     """FocalLoss deve retornar escalar."""
     loss_fn = FocalLoss(alpha=0.75, gamma=2.0)
-    logits  = torch.randn(8)
+    logits = torch.randn(8)
     targets = torch.randint(0, 2, (8,)).float()
-    loss    = loss_fn(logits, targets)
+    loss = loss_fn(logits, targets)
     assert loss.ndim == 0, "loss deve ser escalar"
     assert loss.item() > 0
 
 
 def test_sampler_length():
     """Sampler deve ter mesmo comprimento que o DataFrame."""
-    df      = get_sample_df()
+    df = get_sample_df()
     sampler = make_sampler(df)
     assert sampler.num_samples == len(df)
+
