@@ -44,12 +44,14 @@ def compute_metrics(
 
     tn, fp, fn, tp = confusion_matrix(labels, preds).ravel()
 
+    n = tp + tn + fp + fn
     return {
-        "auc_roc":   roc_auc_score(labels, probs),
-        "auc_pr":    average_precision_score(labels, probs),
-        "f1":        f1_score(labels, preds, zero_division=0),  # type: ignore[call-overload]
-        "recall":    tp / (tp + fn) if (tp + fn) > 0 else 0.0,
-        "precision": tp / (tp + fp) if (tp + fp) > 0 else 0.0,
+        "auc_roc":     roc_auc_score(labels, probs),
+        "auc_pr":      average_precision_score(labels, probs),
+        "f1":          f1_score(labels, preds, zero_division=0),  # type: ignore[call-overload]
+        "accuracy":    (tp + tn) / n if n > 0 else 0.0,
+        "recall":      tp / (tp + fn) if (tp + fn) > 0 else 0.0,
+        "precision":   tp / (tp + fp) if (tp + fp) > 0 else 0.0,
         "specificity": tn / (tn + fp) if (tn + fp) > 0 else 0.0,
         "threshold": threshold,
         "tp": int(tp), "fp": int(fp),
@@ -64,6 +66,7 @@ def print_metrics(name: str, m: dict) -> None:
     print(f"  AUC-ROC    : {m['auc_roc']:.4f}")
     print(f"  AUC-PR     : {m['auc_pr']:.4f}")
     print(f"  F1-Score   : {m['f1']:.4f}  (threshold={m['threshold']:.2f})")
+    print(f"  Accuracy   : {m['accuracy']:.4f}")
     print(f"  Recall     : {m['recall']:.4f}   ← % doentes detectados")
     print(f"  Precision  : {m['precision']:.4f}")
     print(f"  Specificity: {m['specificity']:.4f}")
