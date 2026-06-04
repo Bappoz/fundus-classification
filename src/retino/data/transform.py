@@ -4,7 +4,7 @@ from ..config import cfg
 
 
 # Data Albuminations usando transforms
-def get_transforms(split: str, img_size: int = None) -> Album.Compose:
+def get_transforms(split: str, img_size: int | None = None) -> Album.Compose:
     """
         split: 'train', | 'val' | 'test'
         Treino: augmentation + normalization

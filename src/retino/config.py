@@ -31,8 +31,10 @@ class Config:
     # treino
     batch_size: int = 32
     lr: float = 1e-4
-    epochs: int = 20
+    epochs: int = 40
     backbone: str = "resnet50"
+    num_workers: int = 4
+    cache_dir: Path | None = None
 
     def __post_init__(self):
         self.meta_dir = self.data_root / "dataset"
