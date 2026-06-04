@@ -12,15 +12,12 @@ from pathlib import Path
 
 
 def find_best_threshold(probs: np.ndarray, labels: np.ndarray) -> float:
-    """
-    Encontra o threshold que maximiza o F1-score.
-    Padrão (0.5) é subótimo para dados desbalanceados.
-    """
+    """ Encontra o threshold que maximiza o F1-score """
     thresholds = np.linspace(0.01, 0.99, 200)
     best_t, best_f1 = 0.5, 0.0
     for t in thresholds:
         preds = (probs >= t).astype(int)
-        f1 = f1_score(labels, preds, zero_division=0)  # type: ignore[call-overload]
+        f1 = f1_score(labels, preds, zero_division=0)
         if f1 > best_f1:
             best_f1, best_t = f1, t
     return best_t
@@ -31,13 +28,7 @@ def compute_metrics(
     labels: np.ndarray,
     threshold: float | None = None,
 ) -> dict:
-    """
-    Calcula todas as métricas relevantes para classificação binária
-    com dados desbalanceados.
-
-    probs:  probabilidades sigmoid [0,1] — shape (n,)
-    labels: labels reais 0/1 — shape (n,)
-    """
+    """ Calcula todas as métricas relevantes para classificação binária com dados desbalanceados """
     if threshold is None:
         threshold = find_best_threshold(probs, labels)
     preds = (probs >= threshold).astype(int)
@@ -81,10 +72,8 @@ def plot_comparison(
     Gera figura comparativa com 4 subplots:
       1. Curvas ROC dos dois experimentos
       2. Curvas Precision-Recall dos dois experimentos
-      3. Matriz de confusão — Experimento 1
-      4. Matriz de confusão — Experimento 2
-
-    results: {"nome": {"probs": ..., "labels": ..., "metrics": ...}}
+      3. Matriz de confusão do Experimento 1
+      4. E Matriz de confusão do Experimento 2
     """
     fig = plt.figure(figsize=(14, 10))
     gs  = gridspec.GridSpec(2, 2, figure=fig, hspace=0.35, wspace=0.3)
@@ -92,7 +81,7 @@ def plot_comparison(
     colors = ["#2196F3", "#FF5722"]
     names  = list(results.keys())
 
-    # ── ROC ────────────────────────────────────────────────────────────────
+    # ROC
     ax_roc = fig.add_subplot(gs[0, 0])
     ax_roc.plot([0, 1], [0, 1], "k--", lw=0.8, alpha=0.4)
     for name, color in zip(names, colors):
@@ -105,7 +94,7 @@ def plot_comparison(
     ax_roc.legend(fontsize=9)
     ax_roc.set_xlim(0, 1); ax_roc.set_ylim(0, 1.02)
 
-    # ── Precision-Recall ───────────────────────────────────────────────────
+    # Aqui é o recall de precisão
     ax_pr = fig.add_subplot(gs[0, 1])
     baseline = results[names[0]]["labels"].mean()
     ax_pr.axhline(baseline, color="k", ls="--", lw=0.8, alpha=0.4,
@@ -120,7 +109,7 @@ def plot_comparison(
     ax_pr.legend(fontsize=9)
     ax_pr.set_xlim(0, 1); ax_pr.set_ylim(0, 1.02)
 
-    # ── Matrizes de confusão ───────────────────────────────────────────────
+    # Matrizes de confusão
     for i, (name, color) in enumerate(zip(names, colors)):
         ax_cm = fig.add_subplot(gs[1, i])
         r     = results[name]
